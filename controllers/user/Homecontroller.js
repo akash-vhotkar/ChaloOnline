@@ -1,3 +1,4 @@
+
 const Homecontroller = () => {
     return {
         indexpage(req, res) {
@@ -8,5 +9,6 @@ const Homecontroller = () => {
         }
     }
 }
+
 
 module.exports = Homecontroller;

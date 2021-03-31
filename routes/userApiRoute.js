@@ -8,7 +8,11 @@ router.get('/', Homecontroller().indexpage);
 
 //
 router.post('/login', Authcontroller().login);
-router.get('/register', Authcontroller().register);
+router.post('/register', Authcontroller().register);
+router.post('/getUserinfoByrefferid', Authcontroller().getUserinfoByrefferid);
+router.post('/changePassword', Authcontroller().changePassword);
+router.post('/SendEmail', Authcontroller().SendEmail);
+router.post('/forgotpass', Authcontroller().forgotpassword);
 
 
 module.exports = router;

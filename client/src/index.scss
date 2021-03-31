@@ -1,0 +1,192 @@
+$primary-color: #3b5f9d;
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  font-family: Arial, Helvetica, sans-serif;
+}
+//////////Navbar Start//////////////////////
+.navbar {
+  background-color: $primary-color;
+  .img-fluid {
+    background-color: $primary-color;
+    height: 40px;
+  }
+  .MuiSvgIcon-root {
+    color: #ffffff;
+    cursor: pointer;
+  }
+}
+//////////Navbar End///////////////////////
+
+/////////Side Navbar Start/////////////////
+.MuiPaper-root {
+  background-color: $primary-color !important;
+  color: #ffffff !important;
+}
+.MuiList-padding {
+  padding: 0 !important;
+}
+.MuiTypography-root {
+  color: #ffffff;
+  text-transform: capitalize;
+}
+.MuiSvgIcon-root {
+  color: #ffffff;
+}
+.sidenav-title {
+  padding: 20px 70px 5px;
+  background-color: #ffffff;
+  margin: 0;
+  color: $primary-color;
+  font-weight: bold;
+}
+.sidenav-subtitle {
+  padding: 0 70px 20px 70px;
+  background-color: #ffffff;
+  color: $primary-color;
+  font-weight: bold;
+}
+.act {
+  color: red;
+  animation: blink 2s infinite;
+  font-weight: bolder;
+}
+.fa-graduation-cap {
+  margin-right: 35px;
+  margin-left: 5px;
+}
+@keyframes blink {
+  0% {
+    color: red;
+  }
+  25% {
+    color: green;
+  }
+  50% {
+    color: red;
+  }
+  75% {
+    color: green;
+  }
+  100% {
+    color: red;
+  }
+}
+//////////Side Navbar End///////////////////
+
+/////////Dashboard Start////////////////////
+.card {
+  background-color: $primary-color !important;
+  color: #ffffff;
+  min-height: 250px;
+  p {
+    text-align: justify;
+  }
+}
+////////Dashboard End/////////////////////////
+
+.page-heading {
+  margin: 40px 0 0 50px;
+  color: $primary-color;
+  padding-left: 50px;
+  border-left: 4px solid $primary-color;
+  text-shadow: 1px 1px 3px #000;
+}
+
+////////Login Page Start/////////////////////
+#login-page {
+  h1 {
+    color: $primary-color;
+    text-align: center;
+    margin-bottom: 0;
+  }
+  p {
+    color: $primary-color;
+    text-align: center;
+  }
+  form {
+    padding: 60px 50px 0;
+    .form-control {
+      border: none;
+      box-shadow: none;
+      border-bottom: 2px solid $primary-color;
+      border-radius: 0;
+    }
+    .btn-login {
+      background-image: linear-gradient(to right, #3b5f9d, #637aa3);
+      color: #ffffff;
+      border: none;
+      padding: 2px 80px;
+      border-radius: 5px;
+      display: flex;
+      margin: 70px auto 40px;
+    }
+  }
+  .links {
+    color: $primary-color;
+    margin: 0 auto;
+    text-transform: capitalize;
+  }
+}
+@media screen and (max-width: 500px) {
+  #login-page {
+    form {
+      padding: 40px 0 0;
+    }
+    .btn-login {
+      padding: 2px 30px;
+      margin: 20px auto;
+    }
+  }
+}
+////////Login Page End///////////////////////
+
+////////Login Page Start/////////////////////
+#registration-page {
+  h1 {
+    color: $primary-color;
+    text-align: center;
+    margin-bottom: 0;
+  }
+  p {
+    color: $primary-color;
+    text-align: center;
+  }
+  form {
+    padding: 60px 50px 0;
+    .form-control {
+      border: none;
+      box-shadow: none;
+      border-bottom: 2px solid $primary-color;
+      border-radius: 0;
+    }
+    .btn-login {
+      background-image: linear-gradient(to right, #3b5f9d, #637aa3);
+      color: #ffffff;
+      border: none;
+      padding: 7px 80px;
+      border-radius: 5px;
+      display: flex;
+      margin: 70px auto 40px;
+    }
+  }
+  .links {
+    color: $primary-color;
+    margin: 0 auto;
+    text-transform: capitalize;
+  }
+}
+@media screen and (max-width: 500px) {
+  #login-page {
+    form {
+      padding: 40px 0 0;
+    }
+    .btn-login {
+      padding: 2px 30px;
+      margin: 20px auto;
+    }
+  }
+}
+////////Login Page End///////////////////////

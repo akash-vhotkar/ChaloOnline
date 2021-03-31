@@ -1,3 +1,120 @@
-.App {
+body {
+  padding: 0px;
+  margin: 0px;
+  font-family: "Ubuntu", sans-serif;
+}
+
+.container {
+  display: flex;
+  flex-flow: row wrap;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+}
+
+.login,
+.register {
+  width: 400px;
+}
+
+.login h2,
+.register h2 {
+  font-size: 30px;
+  text-transform: uppercase;
   text-align: center;
+  color: #827ffe;
+}
+.register h3 {
+  text-align: center;
+}
+.login a {
+  text-align: center;
+}
+
+input[type="text"] {
+  background-color: transparent;
+  width: 200px;
+  border: 0;
+  outline: 0;
+  border-top: 0px;
+  border-bottom: 2px solid black;
+  align-items: center;
+  margin-left: 100px;
+  margin-top: 20px;
+}
+
+input[type="password"] {
+  background-color: transparent;
+  width: 200px;
+  border: 0;
+  outline: 0;
+  border-top: 0px;
+  border-bottom: 2px solid black;
+  align-items: center;
+  margin-left: 100px;
+  margin-top: 20px;
+}
+
+input[type="submit"] {
+  padding: 15px 0px;
+  background-color: ;
+  color: black;
+  font-size: 20px;
+  margin-top: 10px;
+  margin-bottom: 20px;
+  border: none;
+  width: 80px;
+  margin-top: 20px;
+  margin-left: 160px;
+}
+
+.check {
+  font-size: 16px;
+}
+.register {
+  position: absolute;
+  top: 0;
+  right: 0;
+  height: 751px;
+}
+#header {
+  background-image: url("./rander.png");
+  background-size: cover;
+  background-color: black;
+  width: 1136px;
+  height: 753px;
+  position: absolute;
+  top: 0;
+  left: 0;
+}
+#regli {
+  margin-left: 160px;
+}
+.login {
+  position: absolute;
+  top: 0;
+  right: 0;
+  height: 751px;
+}
+#logli {
+  margin-left: 140px;
+}
+.inx {
+  align-items: center;
+  text-align: center;
+}
+.inx h2 {
+  align-items: center;
+  background-color: #827ffe;
+}
+#inxreg {
+  margin-left: 20px;
+}
+#inxlog {
+  
+  margin-right: 20px;
+}
+#inxreg :hover{
+  background-color: black;
+  color: aliceblue;
 }

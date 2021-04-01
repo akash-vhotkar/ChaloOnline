@@ -1,9 +1,17 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import Loginillustration from "../image/login.png";
 import ChevronRightIcon from '@material-ui/icons/ChevronRight';
-import { NavLink } from "react-router-dom";
+import { NavLink, useHistory } from "react-router-dom";
+import { Helmet } from "react-helmet";
+import toast, { Toaster } from 'react-hot-toast';
+import { useSelector, useDispatch } from 'react-redux';
+import { postLogin } from '../../store/actionMethods/AuthMethods';
+
 
 const Login = () => {
+    const dispatch = useDispatch();
+    const history = useHistory();
+    const { loginErrors, user } = useSelector(state => state.AuthReducer);
 
     const [data, setData] = useState(
         {
@@ -11,6 +19,17 @@ const Login = () => {
             password: ""
         }
     );
+
+    useEffect(() => {
+        if (loginErrors.length > 0) {
+            loginErrors.map(err => {
+                toast.error(err.message)
+            })
+        }
+        if (user) {
+            history.push("/dashboard")
+        }
+    }, [loginErrors])
 
     const InputEvent = (event) => {
         const { name, value } = event.target;
@@ -25,11 +44,16 @@ const Login = () => {
 
     const formSubmit = (e) => {
         e.preventDefault();
-        alert(`Email: ${data.email} . Password: ${data.password}`)
-
+        dispatch(postLogin(data));
     }
     return (
         <>
+            <Helmet>
+                <title>Login - Chalo Online</title>
+                <meta name="description" content="Welcome to forgotpassword page" />
+            </Helmet>
+            <Toaster position="top-right" reverseOrder={false} toastOptions={{ style: { fontSize: '14px' } }} />
+
             <div className="container-fluid" id="login-page">
                 <div className="row">
                     <div className="col-md-6 p-0">

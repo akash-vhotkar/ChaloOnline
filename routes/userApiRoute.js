@@ -6,7 +6,7 @@ const Authcontroller = require('../controllers/user/Authcontroler');
 
 router.get('/', Homecontroller().indexpage);
 
-//
+// 
 router.post('/login', Authcontroller().login);
 router.post('/register', Authcontroller().register);
 router.post('/getUserinfoByrefferid', Authcontroller().getUserinfoByrefferid);

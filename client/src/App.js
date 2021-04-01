@@ -15,6 +15,7 @@ import Store from './store';
 import { Provider } from 'react-redux'
 import Forgotpasschange from './assets/component/Forgotpasschange';
 import Privateroute from "./private/Privateroute";
+import Activateacc from "./assets/component/Activateacc";
 
 const App = () => {
   return (
@@ -26,6 +27,7 @@ const App = () => {
           <Route exact path='/forgotpass' exact component={Forgotpass} />
           <Route exact path='/genratepass/:link' component={Forgotpasschange} />
           <Route exact path='/registration/:refferid?' exact component={Registration} />
+          <Privateroute exact path='/activateacc' exact component={Activateacc} />
           <Privateroute exact path='/dashboard' exact component={Dashboard} />
           <Privateroute exact path='/team' exact component={Team} />
           <Privateroute exact path='/income' component={Income} />

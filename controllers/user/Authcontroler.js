@@ -1,6 +1,8 @@
 const Registration = require('../../model/registration');
 const bcryptjs = require('bcryptjs');
 const jwt = require('jsonwebtoken');
+const generateUniqueId = require('generate-unique-id');
+
 
 const Authcontroller = () => {
     return {
@@ -38,9 +40,12 @@ const Authcontroller = () => {
             }
         },
         async register(req, res) {
-            console.log('req come');
-            console.log(req.body);
             const { name, email, number, password, refferBy } = req.body;
+            let id = generateUniqueId({
+                useLetters: false,
+                length: 8
+            });
+            id = "C0" + id;
 
             if (!name || !email || !number || !password) {
                 return res.status(400).json({ errors: [{ message: "All fields required", status: false }] });
@@ -48,7 +53,7 @@ const Authcontroller = () => {
                 return res.status(422).json({ errors: [{ message: "Enter The valid Number", status: false }] });
             }
             try {
-                const IsuserExist = await Registration.findOne({ id: number });
+                const IsuserExist = await Registration.findOne({ id: id });
                 const IsuserExist2 = await Registration.findOne({ email });
                 if (IsuserExist2) {
                     return res.status(422).json({ errors: [{ message: "Email Allready exist", status: false }] });
@@ -59,9 +64,8 @@ const Authcontroller = () => {
                 else {
                     const hashpass = await bcryptjs.hash(password, 12);
                     const newUser = new Registration({
-                        name, email, number, id: number, password: hashpass, refferBy
+                        name, email, number, id: id, password: hashpass, refferBy
                     })
-                    console.log(newUser);
                     const newUserRegister = await newUser.save();
                     if (newUserRegister) {
                         return res.status(200).json({ message: "registration successfully", status: true });

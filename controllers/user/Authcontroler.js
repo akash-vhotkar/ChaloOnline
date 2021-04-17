@@ -169,6 +169,17 @@ const Authcontroller = () => {
             } catch (error) {
                 return res.status(500).json({ errors: [{ message: "Something went wrong", status: false, errs: error }] });
             }
+        },
+        async getuserbyid(req, res) {
+            console.log(req.body);
+            const { id } = req.body;
+            try {
+                const data = await Registration.findById(id).select("-password");
+                const token = await jwt.sign({ user: data }, process.env.JWT_SECRET);
+                return res.status(200).json({ token: token, message: "user found", status: true });
+            } catch (error) {
+                return res.status(500).json({ errors: [{ message: "Something went wrong", status: false, errs: error }] });
+            }
         }
     };
 }

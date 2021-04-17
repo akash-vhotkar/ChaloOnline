@@ -2,6 +2,8 @@ import React from "react";
 import Navbar from "./Navbar";
 import toast, { Toaster } from 'react-hot-toast';
 import { Helmet } from "react-helmet";
+import { getUserByIdData } from '../../store/actionMethods/AuthMethods';
+import { useDispatch, useSelector } from "react-redux";
 
 const style = {
     acctivareform: {
@@ -12,6 +14,12 @@ const style = {
 }
 
 const Activateacc = () => {
+    const { user } = useSelector(state => state.AuthReducer);
+    const dispatch = useDispatch();
+    const activateform = () => {
+        dispatch(getUserByIdData({ id: user._id }));
+    }
+
     return (
         <React.Fragment>
             <Helmet>
@@ -45,7 +53,7 @@ const Activateacc = () => {
                         <input type="password" name="confirm_password" className="form-control" placeholder="Enter confirm password" required />
                     </div>
                     <div className="form-group px-3 py-1">
-                        <input type="submit" className="form-control p-2 bg-primary text-white" id="exampleInputPassword1" value="Activate Account" />
+                        <input onClick={activateform} type="submit" className="form-control p-2 bg-primary text-white" id="exampleInputPassword1" value="Activate Account" />
                     </div>
                 </div>
             </div>

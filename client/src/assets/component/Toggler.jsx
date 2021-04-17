@@ -65,15 +65,21 @@ const Toggler = () => {
                 <p className="sidenav-subtitle">{user.id}</p>
                 <Menu menuNameAddress="/dashboard" menuIcon={<DashboardIcon />} menuName="dashboard" />
                 <Menu menuNameAddress="/freelink" menuIcon={<LinkIcon />} menuName="Your Refferal link" />
-                <NavLink to="/activateacc"><span className="act btn"><i className="fa fa-graduation-cap" aria-hidden="true"></i> Activate Now</span></NavLink>
+                {
+                  user.isPaymentdone ? (
+                    <Menu menuNameAddress="/team" menuIcon={<GroupIcon />} menuName="Manage profile" />
+                  ) : (
+                    <NavLink to="/activateacc"><span className="act btn"><i className="fa fa-graduation-cap" aria-hidden="true"></i> Activate Now</span></NavLink>
+                  )
+                }
                 <Menu menuNameAddress="/team" menuIcon={<GroupIcon />} menuName="team" />
                 <Menu menuNameAddress="/income" menuIcon={<CreditCardIcon />} menuName="income" />
                 <Menu menuNameAddress="/paymenthistory" menuIcon={<AssignmentIcon />} menuName="payment history" />
                 <Menu menuNameAddress="/contactus" menuIcon={<CallIcon />} menuName="contact us" />
                 <Menu menuNameAddress="/" onClick={Logout} menuIcon={<ExitToAppIcon />} menuName="Logout" />
               </div>
-            </Drawer>
-          </React.Fragment>
+            </Drawer >
+          </React.Fragment >
         ))
       }
     </div >

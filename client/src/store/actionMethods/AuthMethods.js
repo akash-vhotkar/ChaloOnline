@@ -1,5 +1,5 @@
 import axios from 'axios'
-import { LOGIN_ERRORS } from '../types/Usertypes'
+import { LOGIN_ERRORS, SET_TOKEN } from '../types/Usertypes'
 import { BASE_URL, config } from '../../config/Baseurl';
 
 export const postLogin = (state) => {
@@ -20,19 +20,21 @@ export const postLogin = (state) => {
     };
 };
 
-// export const getUserByIdData = (id) => {
-//     return async (dispatch) => {
-//         const config = {
-//             headers: {
-//                 "Content-Type": "application/json"
-//             },
-//         }
-//         try {
-//             const { data } = await axios.post(`${API_URL}/getuserbyid`, id, config);
-//             dispatch({ type: SET_USER, payload: data });
-//         } catch (error) {
-//             console.log(error);
-//         }
-//     };
-// }
+export const getUserByIdData = (id) => {
+    return async (dispatch) => {
+        const config = {
+            headers: {
+                "Content-Type": "application/json"
+            },
+        }
+        try {
+            const { data } = await axios.post(`${BASE_URL}/getuserbyid`, id, config);
+            const token = data.token;
+            localStorage.setItem('myToken', token);
+            dispatch({ type: SET_TOKEN, payload: token });
+        } catch (error) {
+            console.log(error);
+        }
+    };
+}
 

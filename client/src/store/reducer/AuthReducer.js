@@ -40,7 +40,6 @@ const AuthReducer = (state = initState, action) => {
 
     else if (action.type === SET_TOKEN) {
         const decoded = verifytoken(action.payload);
-        console.log(decoded);
         const { user } = decoded;
         return { ...state, token: action.payload, user: user, loginErrors: [], registerErrors: [] };
     }

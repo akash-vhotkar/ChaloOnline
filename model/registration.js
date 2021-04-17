@@ -16,6 +16,7 @@ module.exports = mongoose.model('registration', {
         unique: true
     },
     id: {
+        //// refferal id
         type: String,
         required: true,
         unique: true
@@ -25,6 +26,7 @@ module.exports = mongoose.model('registration', {
         required: true
     },
     refferBy: {
+        // meri
         type: String,
         default: null
     },
@@ -39,5 +41,9 @@ module.exports = mongoose.model('registration', {
     otp: {
         type: String,
         default: null
+    },
+    isPaymentdone: {
+        type: Boolean,
+        default: false
     }
 })

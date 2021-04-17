@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import DashboardIllustration from "../image/dashboard illustration.png";
 import Navbar from "./Navbar";
 import toast, { Toaster } from 'react-hot-toast';
@@ -9,6 +9,7 @@ import Card3 from "../image/ill3.png";
 import Card4 from "../image/ill4.png";
 import Card5 from "../image/ill5.png";
 import Card6 from "../image/ill6.png";
+
 
 const Dashboard = () => {
     return (

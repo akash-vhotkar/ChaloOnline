@@ -11,25 +11,33 @@ import Registration from "./assets/component/Registration";
 import { Redirect, Route, Switch } from 'react-router-dom';
 import "../node_modules/bootstrap/dist/css/bootstrap.min.css";
 import Forgotpass from "./assets/component/Forgotpass";
+import Store from './store';
+import { Provider } from 'react-redux'
+import Forgotpasschange from './assets/component/Forgotpasschange';
+import Privateroute from "./private/Privateroute";
+import Activateacc from "./assets/component/Activateacc";
 
 const App = () => {
   return (
-    <React.Fragment>
-      <Switch>
-        <Route exact path='/' component={Home} />
-        <Route exact path='/login' component={Login} />
-        <Route exact path='/forgotpass' component={Forgotpass} />
-        <Route exact path='/registration/:refferid?' component={Registration} />
-        <Route exact path='/dashboard' component={Dashboard} />
-        <Route exact path='/team' component={Team} />
-        <Route exact path='/income' component={Income} />
-        <Route exact path='/paymenthistory' component={PaymentHistory} />
-        <Route exact path='/contactus' component={ContactUs} />
-        <Route exact path='/contactus' component={ContactUs} />
-        <Route exact path='/freelink' component={FreeLink} />
-        <Redirect to="/" />
-      </Switch>
-    </React.Fragment>
+    <Provider store={Store}>
+      <React.Fragment>
+        <Switch>
+          <Route exact path='/' exact component={Home} />
+          <Route exact path='/login' exact component={Login} />
+          <Route exact path='/forgotpass' exact component={Forgotpass} />
+          <Route exact path='/genratepass/:link' component={Forgotpasschange} />
+          <Route exact path='/registration/:refferid?' exact component={Registration} />
+          <Privateroute exact path='/activateacc' exact component={Activateacc} />
+          <Privateroute exact path='/dashboard' exact component={Dashboard} />
+          <Privateroute exact path='/team' exact component={Team} />
+          <Privateroute exact path='/income' component={Income} />
+          <Privateroute exact path='/paymenthistory' exact component={PaymentHistory} />
+          <Privateroute exact path='/contactus' exact component={ContactUs} />
+          <Privateroute exact path='/freelink' exact component={FreeLink} />
+          <Redirect to="/" />
+        </Switch>
+      </React.Fragment>
+    </Provider>
   );
 }
 

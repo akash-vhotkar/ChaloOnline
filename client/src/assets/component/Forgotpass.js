@@ -22,6 +22,7 @@ const Forgotpass = () => {
     const Sendresetlink = async (d) => {
         try {
             const { data } = await axios.post(`${BASE_URL}/SendEmail`, d, config);
+            history.push('/login');
             toast.success(data.msg);
         } catch (error) {
             const { data: { errors } } = error.response;

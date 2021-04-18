@@ -2,17 +2,19 @@ const Registration = require('../../model/registration');
 const bcryptjs = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const sendgrid = require('sendgrid');
+const generateUniqueId = require('generate-unique-id');
+
+
+
 const Authcontroller = () => {
     return {
         async login(req, res) {
-            const { number, password } = req.body;
-            if (!number || !password) {
+            const { email, password } = req.body;
+            if (!email || !password) {
                 return res.status(400).json({ errors: [{ message: "All fields required", status: false }] });
-            } else if (number.length < 10 || number.length >= 11) {
-                return res.status(422).json({ errors: [{ message: "Enter The valid Number", status: false }] });
             }
             try {
-                const IsuserExist = await Registration.findOne({ id: number });
+                const IsuserExist = await Registration.findOne({ email });
                 if (IsuserExist) {
                     if (!IsuserExist.Isactive) {
                         return res.status(500).json({ errors: [{ message: "Your Account is not active", status: false }] });
@@ -29,20 +31,23 @@ const Authcontroller = () => {
                         const token = await jwt.sign({ user: payload }, process.env.JWT_SECRET);
                         return res.status(200).json({ token: token, message: "Login Successfully", status: true })
                     } else {
-                        return res.status(400).json({ errors: [{ message: "Invalid Number or password", status: false }] });
+                        return res.status(400).json({ errors: [{ message: "Invalid Email or password", status: false }] });
                     }
 
                 } else {
-                    return res.status(400).json({ errors: [{ message: "Invalid Number or password", status: false }] });
+                    return res.status(400).json({ errors: [{ message: "Invalid Email or password", status: false }] });
                 }
             } catch (error) {
                 return res.status(500).json({ errors: [{ message: "Something went wrong", status: false, errs: error }] });
             }
         },
         async register(req, res) {
-            console.log('req come');
-            console.log(req.body);
             const { name, email, number, password, refferBy } = req.body;
+            let id = generateUniqueId({
+                useLetters: false,
+                length: 8
+            });
+            id = "C0" + id;
 
             if (!name || !email || !number || !password) {
                 return res.status(400).json({ errors: [{ message: "All fields required", status: false }] });
@@ -50,7 +55,7 @@ const Authcontroller = () => {
                 return res.status(422).json({ errors: [{ message: "Enter The valid Number", status: false }] });
             }
             try {
-                const IsuserExist = await Registration.findOne({ id: number });
+                const IsuserExist = await Registration.findOne({ id: id });
                 const IsuserExist2 = await Registration.findOne({ email });
                 if (IsuserExist2) {
                     return res.status(422).json({ errors: [{ message: "Email Allready exist", status: false }] });
@@ -61,9 +66,8 @@ const Authcontroller = () => {
                 else {
                     const hashpass = await bcryptjs.hash(password, 12);
                     const newUser = new Registration({
-                        name, email, number, id: number, password: hashpass, refferBy
+                        name, email, number, id: id, password: hashpass, refferBy
                     })
-                    console.log(newUser);
                     const newUserRegister = await newUser.save();
                     if (newUserRegister) {
                         return res.status(200).json({ message: "registration successfully", status: true });
@@ -130,10 +134,9 @@ const Authcontroller = () => {
             }
             try {
                 const usedata = await Registration.findOne({ email, number });
-                console.log(usedata);
                 if (usedata) {
                     let randomstring = jwt.sign(usedata.email, process.env.FORGOT_PASSWORD_SECRET);
-                    console.log(randomstring);
+                    // console.log(randomstring);
                     await Registration.findOneAndUpdate({ email, number }, { forgotPassword: randomstring });
                     /// code for send email
                     const sendgrkey = "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"
@@ -177,19 +180,25 @@ const Authcontroller = () => {
                     let email = await jwt.verify(code, process.env.FORGOT_PASSWORD_SECRET);
                     if (getuser.email === email) {
                         const hashpass = await bcryptjs.hash(newpass, 12);
-                        const res = await Registration.findOneAndUpdate({ email }, { password: hashpass, forgotPassword: null });
-                        console.log(resp);
-                        if (res) {
-                            res.status(200).json({ msg: "Your password chamge" });
-                        } else {
-                            return res.status(400).json({ errors: [{ message: "Something went wrong while udating password", status: false }] });
-                        }
+                        await Registration.findOneAndUpdate({ email }, { password: hashpass, forgotPassword: "null" });
+                        return res.status(200).json({ msg: "Your password change", status: true });
                     } else {
                         return res.status(400).json({ errors: [{ message: "Email mismatch", status: false }] });
                     }
                 } else {
                     return res.status(400).json({ errors: [{ message: "Incorrect token or expire", status: false }] });
                 }
+            } catch (error) {
+                return res.status(500).json({ errors: [{ message: "Something went wrong", status: false, errs: error }] });
+            }
+        },
+        async getuserbyid(req, res) {
+            console.log(req.body);
+            const { id } = req.body;
+            try {
+                const data = await Registration.findById(id).select("-password");
+                const token = await jwt.sign({ user: data }, process.env.JWT_SECRET);
+                return res.status(200).json({ token: token, message: "user found", status: true });
             } catch (error) {
                 return res.status(500).json({ errors: [{ message: "Something went wrong", status: false, errs: error }] });
             }

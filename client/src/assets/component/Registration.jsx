@@ -3,14 +3,15 @@ import Regisillustration from "../image/regis.png";
 import { Helmet } from "react-helmet";
 import toast, { Toaster } from 'react-hot-toast';
 import ChevronRightIcon from '@material-ui/icons/ChevronRight';
+import { useSelector } from 'react-redux';
 import { NavLink, useHistory, useParams } from "react-router-dom";
 import { BASE_URL, config } from '../../config/Baseurl';
 import axios from 'axios';
 
-
 const Registration = () => {
     let query = useParams();
     const history = useHistory();
+    const { user } = useSelector(state => state.AuthReducer);
 
     const [data, setData] = useState(
         {
@@ -24,7 +25,6 @@ const Registration = () => {
     const registerUser = async (d) => {
         try {
             const { data } = await axios.post(`${BASE_URL}/register`, d, config);
-            console.log(data);
             toast.success(data.message)
         } catch (error) {
             const { data: { errors } } = error.response;
@@ -48,6 +48,9 @@ const Registration = () => {
     useEffect(() => {
         if (query.refferid) {
             setrefferId(query.refferid);
+        }
+        if (user) {
+            history.push('/dashboard')
         }
     }, [])
 

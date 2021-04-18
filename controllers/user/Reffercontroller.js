@@ -1,37 +1,213 @@
 const tree = require('../../model/tree');
 const registrationModel = require('../../model/registration');
 
+const passswordgenerator = require('generate-password');
 
 const Reffercontroller = () => {
     return {
         async addtotree(req, res) {
-            console.log("req come");
-            const { objectid, id, refferby, name, email } = req;
-            try {
-                const user = await registrationModel.find({ id: id });
-                const refferbyuser = await registrationModel.find({ id: refferby });
-                const treereffrbydata = await tree.find({ sponserid: refferby });
-                const checkisuserexist = await tree.find({ objectid });
-                if (checkisuserexist) {
-                    return res.status(422).json({ errors: [{ message: "User Account is allready exixt", status: false }] });
+            const sponsorid = req.body.userid;
+
+            let password = passswordgenerator.generate({
+                length: 10,
+                numbers: true,
+                uppercase: false,
+                lowercase: false
+            });
+
+
+            tree.findOne({ userid: sponsorid }).then(sponsordata => { //get sponsordata first
+                if (sponsordata) {
+                    const sponsorpath = sponsordata.path;
+
+                    const sponsorposition = {//sponsror position
+                        sponsorlevel: sponsordata.level,
+                        sponsorindex: sponsordata.index
+                    }
+
+                    const sponsorleftchild = {  // sponsorleftchild
+                        level: parseInt(sponsorposition.sponsorlevel) + 1,
+                        index: (sponsorposition.sponsorindex * 2 - 1)
+                    }
+                    const sponsorrightchild = { //sponsorrightchild 
+                        level: parseInt(sponsorposition.sponsorlevel) + 1,
+                        index: (sponsorposition.sponsorindex * 2)
+                    }
+
+
+                    tree.findOne({ level: sponsorleftchild.level, index: sponsorleftchild.index }).then((leftchilddata) => { //chckhe weather left exist in database
+
+                        if (leftchilddata) {  // if left child is exist
+                            tree.findOne({ level: sponsorrightchild.level, index: sponsorrightchild.index }).then(rightchilddata => {
+                                if (rightchilddata) { // if their is right child
+
+                                    // position full at the sponsor left and right
+                                    tree.find({ path: sponsorid }).sort({ level: -1 }).limit(1).then(childestnode_data => {
+                                        const childestnode = {
+                                            childlevel: childestnode_data[0].level
+                                        }
+                                        if (parseInt(sponsorposition.sponsorindex) % 2 != 0) {
+                                            tree.find({ level: childestnode.childlevel, path: sponsorid }).sort({ index: 1 }).limit(1).then((maxlevelminindex) => {
+                                                const newnodeparentposition = {
+                                                    parentlevel: maxlevelminindex[0].level,
+                                                    parentindex: maxlevelminindex[0].index
+                                                }
+
+                                                const newnodeposition = {
+                                                    level: parseInt(maxlevelminindex[0].level) + 1,
+                                                    index: (maxlevelminindex[0].index * 2) - 1
+                                                }
+                                                const pathoftheparent = maxlevelminindex[0].path;
+                                                pathoftheparent.push(password);
+                                                const cretefinalnodedata = {
+                                                    name: req.body.name,
+                                                    email: req.body.email,
+                                                    level: newnodeposition.level,
+                                                    index: newnodeposition.index,
+                                                    path: pathoftheparent,
+                                                    Parentposition: newnodeparentposition,
+                                                    userid: password,
+                                                    refferbyid: sponsorid
+                                                }
+                                                tree.create(cretefinalnodedata).then(allnodedata => {
+                                                    res.status(200).json({ err: 0, msg: "node created successfully" })
+                                                }).catch(err => {
+                                                    if (err) console.log(err);;
+                                                })
+
+                                            }).catch(err => {
+                                                if (err)
+                                                    console.log(err);
+
+                                            })
+                                        }
+                                        else {
+                                            // hndeling right position of the tree
+
+
+                                            tree.find({ level: childestnode.childlevel }).sort({ index: -1 }).limit(1).then((maxlevelmaxindex) => {
+
+                                                const newnodeparentposition = {
+                                                    parentlevel: maxlevelmaxindex[0].level,
+                                                    parentindex: maxlevelmaxindex[0].index
+                                                }
+
+                                                const newnodeposition = {
+                                                    level: parseInt(maxlevelmaxindex[0].level) + 1,
+                                                    index: (maxlevelmaxindex[0].index * 2)
+                                                }
+                                                const pathoftheparent = maxlevelmaxindex[0].path;
+                                                pathoftheparent.push(password);
+                                                const cretefinalnodedata = {
+                                                    name: req.body.name,
+                                                    email: req.body.email,
+                                                    level: newnodeposition.level,
+                                                    index: newnodeposition.index,
+                                                    path: pathoftheparent,
+                                                    Parentposition: newnodeparentposition,
+                                                    userid: password,
+                                                    refferbyid: sponsorid
+                                                }
+                                                tree.create(cretefinalnodedata).then(allnodedata => {
+                                                    res.status(200).json({ err: 0, msg: "node created successfully" })
+                                                }).catch(err => {
+                                                    if (err) console.log(err);;
+                                                })
+
+
+
+
+
+
+                                            }).catch(err => {
+                                                if (err)
+                                                    console.log(err);
+
+                                            })
+
+
+
+
+
+
+
+                                        }
+
+                                    }).catch(err => {
+                                        if (err) console.log(err);
+                                    })
+
+
+
+
+
+
+                                }
+                                else {  // no right child
+                                    sponsorpath.push(password);
+
+                                    const createrightchild = {
+                                        name: req.body.name,
+                                        email: req.body.email,
+                                        level: sponsorrightchild.level,
+                                        index: sponsorrightchild.index,
+                                        path: sponsorpath,
+                                        Parentposition: {
+                                            parentlevel: sponsordata.level,
+                                            parentindex: sponsordata.index
+                                        },
+                                        userid: password,
+                                        refferbyid: sponsorid
+                                    }
+                                    tree.create(createrightchild).then(allnodedata => {
+                                        res.status(200).json({ err: 0, msg: "node created sucsessfully" })
+                                    }).catch(err => {
+                                        if (err) console.log(err);
+                                    })
+
+
+                                }
+
+                            }).catch(err => {
+                                if (err) console.log(err);
+                            })
+                        }
+                        else {  // left positition is empty
+                            sponsorpath.push(password)
+                            const createleftchild = {
+                                name: req.body.name,
+                                email: req.body.email,
+                                level: sponsorleftchild.level,
+                                index: sponsorleftchild.index,
+                                Parentposition: {
+                                    parentlevel: sponsordata.level,
+                                    parentindex: sponsordata.index
+                                },
+                                path: sponsorpath,
+                                refferbyid: sponsorid,
+                                userid: password
+                            }
+                            tree.create(createleftchild).then(allnodesdata => {
+                                res.status(200).json({ err: 0, msg: "node created successfully" })
+                            }).catch(err => {
+                                if (err) res.status(500).json({ err: 1, msg: "Internal server error" })
+                            })
+
+                        }
+
+                    }).catch(err => {
+                        res.status(500).json({ err: 1, msg: "Internal server error" });
+                    })
+                } else {
+                    res.status(500).json({ err: 1, msg: "Invalid Sponsorid" });
                 }
 
 
-                const newactivate = new tree({
-                    objectid,
-                    userid: id,
-                    refferbyid: refferby,
-                    name: name,
-                    email: email
-                });
 
+            }).catch(err => {
+                if (err) console.log(err);
+            })
 
-
-            } catch (error) {
-                return res.status(500).json({ errors: [{ message: "Something went wrong", status: false, errs: error }] });
-            }
-        },
-        async function(req, res, sponsorid) {
 
         }
     }

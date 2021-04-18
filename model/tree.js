@@ -11,7 +11,13 @@ module.exports = mongoose.model('tree', {
     },
     refferbyid: {
         type: String,
-        required: true
+        required: false
+    },
+    level: {
+        type: String
+    },
+    index: {
+        type: String
     },
     name: {
         type: String,
@@ -21,14 +27,13 @@ module.exports = mongoose.model('tree', {
         type: String,
         required: true
     },
-    paths: [],
-    parentPos: [
-        {
-            pso: {
-                type: String
-            }
-        }
-    ]
+    path: {
+        type: Array
+    },
+    Parentposition: {
+        parentlevel: String,
+        parentindex: String
+    }
 })
 
 

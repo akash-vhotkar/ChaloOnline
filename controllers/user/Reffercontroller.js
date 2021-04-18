@@ -15,7 +15,7 @@ const Reffercontroller = () => {
                 if (checkisuserexist) {
                     return res.status(422).json({ errors: [{ message: "User Account is allready exixt", status: false }] });
                 }
-                
+
 
                 const newactivate = new tree({
                     objectid,
@@ -30,6 +30,9 @@ const Reffercontroller = () => {
             } catch (error) {
                 return res.status(500).json({ errors: [{ message: "Something went wrong", status: false, errs: error }] });
             }
+        },
+        async function(req, res, sponsorid) {
+
         }
     }
 }

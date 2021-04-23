@@ -3,6 +3,18 @@ const registrationModel = require('../../model/registration');
 
 const passswordgenerator = require('generate-password');
 
+var cron = require('node-cron');
+// "*/10 * * * * *" for 10 seconds
+// '0 0 */12 * * *' for 12 hourse
+cron.schedule("*/10 * * * * *", () => {
+    console.log("every 10 seconds ");
+
+}, {
+    scheduled: true,
+    timezone: "Asia/Kolkata"
+});
+
+
 const Reffercontroller = () => {
     return {
         async addtotree(req, res) {
@@ -208,6 +220,22 @@ const Reffercontroller = () => {
                 if (err) console.log(err);
             })
 
+
+        },
+        addrootnode(req, res) {
+            const admin = {
+                path: ["6105263500"],
+                email: "admin$",
+                name: "companyname",
+                level: 1,
+                userid: "6105263500",
+                index: 1
+            }
+            tree.create(admin).then(alldata => {
+                res.send('creted')
+            }).catch(err => {
+                if (err) console.log(err);
+            })
 
         }
     }

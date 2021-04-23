@@ -1,7 +1,7 @@
 const Registration = require('../../model/registration');
 const bcryptjs = require('bcryptjs');
 const jwt = require('jsonwebtoken');
-const sendgrid = require('sendgrid');
+
 const generateUniqueId = require('generate-unique-id');
 
 
@@ -139,24 +139,8 @@ const Authcontroller = () => {
                     // console.log(randomstring);
                     await Registration.findOneAndUpdate({ email, number }, { forgotPassword: randomstring });
                     /// code for send email
-                    const sendgrkey = "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"
-                    sendgrid.setApiKey(sendgrkey);
-                    const message = {
-                        to: email,
-                        from: {
-                            name: "hardcipher",
-                            email: "akashvhotkar4@gmail.com"
-                        },
-                        subject: "Change password",
-                        html: `HELLOW MAIL FROM NODE`
 
-                    }
-                    await sendgrid.send(message).then(responsed => {
-                        res.status(200).json({ msg: "Email Successfully Send To your Register email id " });
-                    }).catch(err => {
-                        if (err) console.log(err);
-                    })
-
+                    res.status(200).json({ msg: "Email Successfully Send To your Register email id " });
 
 
 

@@ -16,7 +16,9 @@ router.post('/getuserbyid', Authcontroller().getuserbyid);
 router.post('/SendEmail', Authcontroller().SendEmail);
 router.post('/forgotpass', Authcontroller().forgotpassword);
 //
-router.post('/activateacc', Reffercontroller().addtotree);
+// router.post('/activateacc', Reffercontroller().addtotree);
+router.post('/addnode', Reffercontroller().addtotree)
+router.get('/add', Reffercontroller().addrootnode)
 
 
 module.exports = router;

@@ -17,8 +17,7 @@ cron.schedule("*/10 * * * * *", () => {
 
 const Reffercontroller = () => {
     return {
-        async addtotree(req, res) {
-            const sponsorid = req.body.userid;
+        async addtotree(req, res, sponsorid, id, name, email) {
 
             let password = passswordgenerator.generate({
                 length: 10,
@@ -28,7 +27,7 @@ const Reffercontroller = () => {
             });
 
 
-            tree.findOne({ userid: sponsorid }).then(sponsordata => { //get sponsordata first
+            tree.findOne({ id: sponsorid }).then(sponsordata => { //get sponsordata first
                 if (sponsordata) {
                     const sponsorpath = sponsordata.path;
 
@@ -70,15 +69,15 @@ const Reffercontroller = () => {
                                                     index: (maxlevelminindex[0].index * 2) - 1
                                                 }
                                                 const pathoftheparent = maxlevelminindex[0].path;
-                                                pathoftheparent.push(password);
+                                                pathoftheparent.push(id);
                                                 const cretefinalnodedata = {
-                                                    name: req.body.name,
-                                                    email: req.body.email,
+                                                    name: name,
+                                                    email: email,
                                                     level: newnodeposition.level,
                                                     index: newnodeposition.index,
                                                     path: pathoftheparent,
                                                     Parentposition: newnodeparentposition,
-                                                    userid: password,
+                                                    id: id,
                                                     refferbyid: sponsorid
                                                 }
                                                 tree.create(cretefinalnodedata).then(allnodedata => {
@@ -109,15 +108,15 @@ const Reffercontroller = () => {
                                                     index: (maxlevelmaxindex[0].index * 2)
                                                 }
                                                 const pathoftheparent = maxlevelmaxindex[0].path;
-                                                pathoftheparent.push(password);
+                                                pathoftheparent.push(id);
                                                 const cretefinalnodedata = {
-                                                    name: req.body.name,
-                                                    email: req.body.email,
+                                                    name: name,
+                                                    email: email,
                                                     level: newnodeposition.level,
                                                     index: newnodeposition.index,
                                                     path: pathoftheparent,
                                                     Parentposition: newnodeparentposition,
-                                                    userid: password,
+                                                    id: id,
                                                     refferbyid: sponsorid
                                                 }
                                                 tree.create(cretefinalnodedata).then(allnodedata => {
@@ -156,11 +155,11 @@ const Reffercontroller = () => {
 
                                 }
                                 else {  // no right child
-                                    sponsorpath.push(password);
+                                    sponsorpath.push(id);
 
                                     const createrightchild = {
-                                        name: req.body.name,
-                                        email: req.body.email,
+                                        name: name,
+                                        email: email,
                                         level: sponsorrightchild.level,
                                         index: sponsorrightchild.index,
                                         path: sponsorpath,
@@ -168,7 +167,7 @@ const Reffercontroller = () => {
                                             parentlevel: sponsordata.level,
                                             parentindex: sponsordata.index
                                         },
-                                        userid: password,
+                                        id: id,
                                         refferbyid: sponsorid
                                     }
                                     tree.create(createrightchild).then(allnodedata => {
@@ -185,10 +184,10 @@ const Reffercontroller = () => {
                             })
                         }
                         else {  // left positition is empty
-                            sponsorpath.push(password)
+                            sponsorpath.push(id)
                             const createleftchild = {
-                                name: req.body.name,
-                                email: req.body.email,
+                                name: name,
+                                email: email,
                                 level: sponsorleftchild.level,
                                 index: sponsorleftchild.index,
                                 Parentposition: {
@@ -197,20 +196,26 @@ const Reffercontroller = () => {
                                 },
                                 path: sponsorpath,
                                 refferbyid: sponsorid,
-                                userid: password
+                                id: id
                             }
                             tree.create(createleftchild).then(allnodesdata => {
                                 res.status(200).json({ err: 0, msg: "node created successfully" })
                             }).catch(err => {
-                                if (err) res.status(500).json({ err: 1, msg: "Internal server error" })
+
+                                if (err) {
+                                    console.log(err);
+                                    res.status(500).json({ err: 1, msg: "Internal server error" })
+                                }
                             })
 
                         }
 
                     }).catch(err => {
+                        if (err) console.log(err);
                         res.status(500).json({ err: 1, msg: "Internal server error" });
                     })
                 } else {
+
                     res.status(500).json({ err: 1, msg: "Invalid Sponsorid" });
                 }
 
@@ -228,7 +233,7 @@ const Reffercontroller = () => {
                 email: "admin$",
                 name: "companyname",
                 level: 1,
-                userid: "6105263500",
+                id: "6105263500",
                 index: 1
             }
             tree.create(admin).then(alldata => {

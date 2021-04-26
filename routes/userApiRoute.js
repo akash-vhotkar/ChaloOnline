@@ -4,7 +4,7 @@ const Homecontroller = require('../controllers/user/Homecontroller');
 const Authcontroller = require('../controllers/user/Authcontroler');
 const Reffercontroller = require('../controllers/user/Reffercontroller');
 
-
+const passswordgenerator = require('generate-password');
 router.get('/', Homecontroller().indexpage);
 
 // 
@@ -17,7 +17,10 @@ router.post('/SendEmail', Authcontroller().SendEmail);
 router.post('/forgotpass', Authcontroller().forgotpassword);
 //
 // router.post('/activateacc', Reffercontroller().addtotree);
-router.post('/addnode', Reffercontroller().addtotree)
+router.post('/addnode', (req, res) => {
+    const userid = passswordgenerator.generate();
+    Reffercontroller().addtotree(req, res, req.body.sponsorid, userid, req.body.name, req.body.email)
+})
 router.get('/add', Reffercontroller().addrootnode)
 
 

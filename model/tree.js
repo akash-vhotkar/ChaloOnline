@@ -5,7 +5,7 @@ module.exports = mongoose.model('tree', {
         type: mongoose.Schema.Types.ObjectId,
         ref: 'registration',
     },
-    userid: {
+    id: {
         type: String,
         required: true
     },

@@ -1,17 +1,23 @@
 const mongoose = require('mongoose');
 
-module.exports = mongoose.model('tree', {
-    objectid: {
+const treeSchema = mongoose.Schema({
+    uobjectid: {
         type: mongoose.Schema.Types.ObjectId,
         ref: 'registration',
     },
-    userid: {
+    id: {
         type: String,
         required: true
     },
     refferbyid: {
         type: String,
-        required: true
+        required: false
+    },
+    level: {
+        type: String
+    },
+    index: {
+        type: String
     },
     name: {
         type: String,
@@ -21,14 +27,15 @@ module.exports = mongoose.model('tree', {
         type: String,
         required: true
     },
-    paths: [],
-    parentPos: [
-        {
-            pso: {
-                type: String
-            }
-        }
-    ]
-})
+    path: {
+        type: Array
+    },
+    Parentposition: {
+        parentlevel: String,
+        parentindex: String
+    }
+},{timestamp:true});
 
+const mod = mongoose.model('tree',treeSchema);
 
+module.exports = mod;

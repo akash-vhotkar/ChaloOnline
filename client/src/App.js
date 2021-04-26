@@ -16,6 +16,8 @@ import { Provider } from 'react-redux'
 import Forgotpasschange from './assets/component/Forgotpasschange';
 import Privateroute from "./private/Privateroute";
 import Activateacc from "./assets/component/Activateacc";
+import Paynow from "./assets/component/Paynow";
+import Transationonsuccess from "./assets/component/Transationonsuccess";
 
 const App = () => {
   return (
@@ -34,6 +36,9 @@ const App = () => {
           <Privateroute exact path='/paymenthistory' exact component={PaymentHistory} />
           <Privateroute exact path='/contactus' exact component={ContactUs} />
           <Privateroute exact path='/freelink' exact component={FreeLink} />
+          <Privateroute exact path='/paynow' exact component={Paynow} />
+          <Privateroute exact path='/successtransaction' exact component={Transationonsuccess} />
+          
           <Redirect to="/" />
         </Switch>
       </React.Fragment>

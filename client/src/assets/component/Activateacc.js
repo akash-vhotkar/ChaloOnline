@@ -1,9 +1,10 @@
-import React from "react";
+import React,{useEffect} from "react";
 import Navbar from "./Navbar";
 import toast, { Toaster } from 'react-hot-toast';
 import { Helmet } from "react-helmet";
-import { getUserByIdData } from '../../store/actionMethods/AuthMethods';
-import { useDispatch, useSelector } from "react-redux";
+import { useSelector } from "react-redux";
+import axios from "../../config/axios";
+import { useHistory } from "react-router";
 
 const style = {
     acctivareform: {
@@ -15,9 +16,29 @@ const style = {
 
 const Activateacc = () => {
     const { user } = useSelector(state => state.AuthReducer);
-    const dispatch = useDispatch();
-    const activateform = () => {
-        dispatch(getUserByIdData({ id: user._id }));
+    const history = useHistory();
+
+    useEffect(async () => {
+        const {data} = await axios.post("/isprofilecomplete");
+        if(data.status){
+            history.push("/paynow");
+        }
+    }, [])
+
+    const acctivateAccount = async ()=>{
+        try {
+            const {data} = await axios.post("/getUserInfo",{id:user._id});
+            toast.success(data.message)
+            history.push('/paynow');
+        } catch (error) {
+            const { data: { errors } } = error.response;
+            toast.error(errors[0].message);
+        }
+    }
+
+    const activateform = (e) => {
+        e.preventDefault();
+        acctivateAccount();
     }
 
     return (
@@ -32,29 +53,15 @@ const Activateacc = () => {
             <h1 className="page-heading">Activate acc</h1>
             <div className="container px-5">
                 <div style={style.acctivareform}>
-                    <div className="form-group px-3">
-                        <label>Enter your name <span className="star">*</span></label>
-                        <input type="text" name="adminname" className="form-control" placeholder="Enter your name" required />
-                    </div>
-                    <div className="form-group px-3 py-1">
-                        <label>Enter your username <span className="star">*</span></label>
-                        <input type="text" name="adminusername" className="form-control" placeholder="Enter Username" required />
-                    </div>
-                    <div className="form-group px-3 py-1">
-                        <label>Enter your email <span className="star">*</span></label>
-                        <input type="text" name="adminemail" className="form-control" placeholder="Enter your email" required />
-                    </div>
-                    <div className="form-group px-3 py-1">
-                        <label>Eneter Your Password <span className="star">*</span></label>
-                        <input type="password" className="form-control" name="password" id="exampleInputEmail1" placeholder="Enter Password" />
-                    </div>
-                    <div className="form-group px-3 py-1">
-                        <label>Enter your confirm password <span className="star">*</span></label>
-                        <input type="password" name="confirm_password" className="form-control" placeholder="Enter confirm password" required />
-                    </div>
-                    <div className="form-group px-3 py-1">
-                        <input onClick={activateform} type="submit" className="form-control p-2 bg-primary text-white" id="exampleInputPassword1" value="Activate Account" />
-                    </div>
+                    <form onSubmit={activateform}>
+                            <div className="form-group px-3">
+                            <label>Enter your name <span className="star">*</span></label>
+                            <input type="text" name="name" value={user.name} className="form-control" placeholder="Enter your name" required readOnly />
+                        </div>
+                        <div className="form-group px-3 py-1">
+                            <input type="submit" className="form-control p-2 bg-primary text-white" id="exampleInputPassword1" value="Submit" />
+                        </div>
+                    </form>
                 </div>
             </div>
         </React.Fragment>

@@ -1,7 +1,8 @@
+
 const mongoose = require('mongoose');
 
-module.exports = mongoose.model('tree', {
-    objectid: {
+const treeSchema = mongoose.Schema({
+    uobjectid: {
         type: mongoose.Schema.Types.ObjectId,
         ref: 'registration',
     },
@@ -34,6 +35,8 @@ module.exports = mongoose.model('tree', {
         parentlevel: String,
         parentindex: String
     }
-})
+}, { timestamp: true });
 
+const mod = mongoose.model('tree', treeSchema);
 
+module.exports = mod;

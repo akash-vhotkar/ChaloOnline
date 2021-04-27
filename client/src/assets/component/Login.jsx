@@ -1,16 +1,14 @@
 import React, { useState, useEffect } from "react";
 import Loginillustration from "../image/login.png";
 import ChevronRightIcon from '@material-ui/icons/ChevronRight';
-import { NavLink, useHistory } from "react-router-dom";
+import { NavLink } from "react-router-dom";
 import { Helmet } from "react-helmet";
 import toast, { Toaster } from 'react-hot-toast';
 import { useSelector, useDispatch } from 'react-redux';
 import { postLogin } from '../../store/actionMethods/AuthMethods';
 
-
 const Login = () => {
     const dispatch = useDispatch();
-    const history = useHistory();
     const { loginErrors, user } = useSelector(state => state.AuthReducer);
 
     const [data, setData] = useState(
@@ -27,7 +25,7 @@ const Login = () => {
             })
         }
         if (user) {
-            history.push("/dashboard")
+            window.location = "/dashboard";
         }
     }, [loginErrors])
 

@@ -3,7 +3,7 @@ const bcryptjs = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 
 const generateUniqueId = require('generate-unique-id');
-
+const {addtotree} = require('../../controllers/user/function');
 
 
 const Authcontroller = () => {
@@ -26,7 +26,8 @@ const Authcontroller = () => {
                             name: IsuserExist.name,
                             email: IsuserExist.email,
                             phone: IsuserExist.number,
-                            id: IsuserExist.id
+                            id: IsuserExist.id,
+                            isPaymentdone:IsuserExist.isPaymentdone
                         }
                         const token = await jwt.sign({ user: payload }, process.env.JWT_SECRET);
                         return res.status(200).json({ token: token, message: "Login Successfully", status: true })
@@ -42,11 +43,17 @@ const Authcontroller = () => {
             }
         },
         async register(req, res) {
-            const { name, email, number, password, refferBy } = req.body;
+            let { name, email, number, password, refferBy } = req.body;
+            
+            if(refferBy == null){
+                refferBy = process.env.ADMIN_REFFERID;
+            }
+
             let id = generateUniqueId({
                 useLetters: false,
                 length: 8
             });
+
             id = "C0" + id;
 
             if (!name || !email || !number || !password) {
@@ -57,12 +64,18 @@ const Authcontroller = () => {
             try {
                 const IsuserExist = await Registration.findOne({ id: id });
                 const IsuserExist2 = await Registration.findOne({ email });
+                const IsuserExist3 = await Registration.findOne({ number });
+                
                 if (IsuserExist2) {
                     return res.status(422).json({ errors: [{ message: "Email Allready exist", status: false }] });
                 }
                 if (IsuserExist) {
+                    return res.status(422).json({ errors: [{ message: "id Allready exist", status: false }] });
+                }
+                if(IsuserExist3){
                     return res.status(422).json({ errors: [{ message: "Number Allready exist", status: false }] });
                 }
+
                 else {
                     const hashpass = await bcryptjs.hash(password, 12);
                     const newUser = new Registration({
@@ -70,12 +83,18 @@ const Authcontroller = () => {
                     })
                     const newUserRegister = await newUser.save();
                     if (newUserRegister) {
+                        // console.log(newUserRegister);
+                        // add user to tree
+                        const {_id,name,email,id,refferBy} = newUserRegister;
+                        const respp = await addtotree(req,res,refferBy,id,name,email,_id);
+                        // console.log(respp);
                         return res.status(200).json({ message: "registration successfully", status: true });
                     } else {
                         return res.status(500).json({ errors: [{ message: "registration fail", status: false }] });
                     }
                 }
             } catch (error) {
+                console.log(error);
                 return res.status(500).json({ errors: [{ message: "Something went wrong", status: false, errs: error }] });
             }
         },

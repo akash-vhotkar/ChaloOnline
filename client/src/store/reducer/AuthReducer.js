@@ -20,6 +20,7 @@ const verifytoken = (token) => {
 };
 
 const token = localStorage.getItem('myToken');
+
 if (token) {
     const decodetoken = verifytoken(token);
     if (decodetoken) {

@@ -1,6 +1,7 @@
-import axios from 'axios'
+// import axios from 'axios'
 import { LOGIN_ERRORS, SET_TOKEN } from '../types/Usertypes'
 import { BASE_URL, config } from '../../config/Baseurl';
+import axios from '../../config/axios';
 
 export const postLogin = (state) => {
     return async (dispatch) => {

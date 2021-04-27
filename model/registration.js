@@ -1,6 +1,6 @@
 let mongoose = require('mongoose');
 
-module.exports = mongoose.model('registration', {
+const regSchema = mongoose.Schema({
     name: {
         type: String,
         required: true
@@ -26,7 +26,6 @@ module.exports = mongoose.model('registration', {
         required: true
     },
     refferBy: {
-        // meri
         type: String,
         default: null
     },
@@ -46,4 +45,7 @@ module.exports = mongoose.model('registration', {
         type: Boolean,
         default: false
     }
-})
+},{timestamps:true});
+
+const mod = mongoose.model('registration',regSchema);
+module.exports = mod;

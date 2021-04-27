@@ -1,12 +1,13 @@
 require('dotenv').config();
 const express = require('express');
 const cors = require('cors');
+const payments = require('./controllers/user/Payement')
 require('./config/db')();
 
 const tree = require('./model/tree');
 const app = express();
-app.use(express.json());
 app.use(cors());
+app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
 

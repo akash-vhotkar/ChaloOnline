@@ -29,8 +29,27 @@ const Reffercontroller = () => {
             }).catch(err => {
                 return res.status(400).send('Err', err);
             })
+        },
+        async myreferranls(req, res, id) {
+            try {
+                const referrals = await tree.find({ refferbyid: id }).sort({ name: 1 });
+                return res.status(200).json({ err: 0, message: "Your referrals are ", data: referrals });
+            }
+            catch (err) {
+                if (err) return res.status(500).json({ err: 1, message: "Intteranal server error" });
+            }
+        },
+        async myteam(req, res, id) {
+            try {
+                const myteam = await tree.find({ path: id, refferbyid: { $ne: id } }).sort({ name: 1 });
+                return res.status(200).json({ err: 0, message: "Your team membars are", data: myteam });
+
+            } catch (err) {
+                if (err) return res.status(500).json({ err: 1, message: "Internal server Error" });
+            }
         }
     }
+
 }
 
 module.exports = Reffercontroller;

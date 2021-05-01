@@ -34,7 +34,14 @@ const treeSchema = mongoose.Schema({
     Parentposition: {
         parentlevel: String,
         parentindex: String
-    }
+    },
+    paidlevels: [
+        {
+            id:String,
+            level: Number,
+            amount:Number
+        }
+    ]
 }, { timestamp: true });
 
 const mod = mongoose.model('tree', treeSchema);

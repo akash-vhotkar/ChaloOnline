@@ -11,6 +11,23 @@ var task = cron.schedule('10 * * * * *', (id) => {
         scheduled: false,
         timezone: "Asia/Mumbai"
     });
+    // {
+    //     "path": ["C099735487", "C062510628", "C064038587", "C039178637"],
+    //     "name": "aravind",
+    //     "email": "aravind@gmail.com",
+    //     "level": "4",
+    //     "index": "1",
+    //     "Parentposition": {
+    //         "parentlevel": "3",
+    //         "parentindex": "1"
+    //     },
+    //     "id": "C039178637",
+    //     "refferbyid": "C099735487",
+    //     "uobjectid": {
+    //         "$oid": "60866d741b37345fe83e38f6"
+    //     },
+    //     "__v": 0
+    // }
 
 const Payementcontroller = () => {
     return {// thise is function if user is activated account and refer the other user
@@ -20,30 +37,77 @@ const Payementcontroller = () => {
                 const ans = [];
                 const childdata = await tree.findOne({ id: id });
                 const { parentlevel, parentindex } = childdata.Parentposition;
-                const { path } = await tree.findOne({ level: parentlevel, index: parentindex });
-                await path.forEach(async (id) => {
+
+                const parentdata = await tree.findOne({ level: parentlevel, index: parentindex });
+                const path = parentdata.path;
+                const ogparent =  parentdata.id;
+                console.log(path);
+                
+                await path.forEach(async function(id){
+                    try{
+                    const parentbenifited = await tree.findOne({id: id , paidlevels:{$elemMatch: {level: childdata.level}}});
+                   
+                    if( parentbenifited == null ){
+                    console.log(parentbenifited);
                     const parent = await tree.findOne({ id: id });
-                    const parentlevel = parent.level;
-                    const parentindex = parent.index;
-                    const difference = parseInt(parentlevel) - parseInt(childdata.childlevel);
+                    const parentlevel = parseInt(parent.level);
+                    const parentindex = parseInt(parent.index);
+                    console.log("parenlevel ",parentlevel,"  ", parentindex)
+                    
+                    const difference =   parseInt(childdata.level)-parentlevel;
                     const totalchilds = Math.pow(2, difference);
-                    const minindexnode = await tree.findOne({ level: childdata.childlevel, path: id }).sort({ index: 1 }).limit(1);
-                    const maxindex = minindexnode[0].index + totalchilds;
-                    const pointindex = minindexnode[0].index + parseInt(totalchilds / 2);
-                    const leftcount = await find({ path: id, index: { $lte: pointindex } }).count();
-                    const rightcount = await tree.find({ path: id, index: { $gt: maxindex }, index: { $lt: pointindex } }).count();
-                    if (leftcount == 1 && rightcount == 1) {
+                    const minindexnode = await tree.findOne({ level: childdata.level, path: id }).sort({ index: 1 }).limit(1);
+                    if(Object.keys(minindexnode).length != 0){
+                         
+                    const maxindex = parseInt( minindexnode.index) + totalchilds-1;
+                    const pointindex = parseInt( minindexnode.index) + parseInt(totalchilds / 2)-1;
+                    console.log(" parent level ", parent.level, " parent index ", parent.index, " minindex of the paretnt ", minindexnode.index," max index of ", maxindex," point index is ",pointindex);
+                    const leftcount = await tree.find({ path: id, index: { $lte: pointindex, $gte: minindexnode.index },level: childdata.level }).count();
+                    const rightcount = await tree.find({ path: id, index: { $gt: maxindex }, index: { $gt: pointindex },level: childdata.level }).count();
+                    console.log(leftcount , "  right count ", rightcount," parent id ",parent.id);
+                    
+
+                    if (  difference ==1&&leftcount >= 1 && rightcount >= 1 ) {
+
+                       const updateparent = await tree.findOneAndUpdate({id: id}, {
+                           $push: { paidlevels: {id:childdata.id, amount:1200, level: childdata.level}}
+                       },{new:true});
                         ans.push({ id: id, amount: 1200 })
                     }
-                    else if ((leftcount == 2 && rightcount == 1) || (leftcount == 1 && rightcount == 2)) {
+                    else if ( (difference ==2) &&((leftcount >= 2 && rightcount >= 1) || (leftcount >= 1 && rightcount >= 2) )) {
+
+                        const updateparent = await tree.findOneAndUpdate({id: id}, {
+                            $push: { paidlevels: {id: childdata.id, amount:1500, level: childdata.level}}},{new:true});
+                        
                         ans.push({ id: id, amount: 1500 });
                     }
-                    else if ((leftcount == 3 && rightcount == 2) || (leftcount == 2 && rightcount == 3)) {
+                    else if ((difference >2) && ((leftcount >= 3 && rightcount >= 2) || (leftcount >= 2 && rightcount >= 3))) {
+
+                        const updateparent = await tree.findOneAndUpdate({id: id}, {
+                            $push: { paidlevels: {id: childdata.id, amount:1500, level: childdata.level}}},{new:true});
+                        
                         ans.push({ id: id, amount: 1500 })
                     }
+                    
+                    if(id ==ogparent){
+                        console.log("thise is last benifited ", ans);
+                        return ans;
+                    }
+                }
+            }
+            else{
+                if(id ==ogparent){
+                    
+                    return ans;
+                }
+            }
+        }
+        catch(err){
+            if(err) console.log(err);
+        }
                 })
-                console.log(" the ans is ", ans);
-                return ans;
+             
+                
             } catch (err) {
                 console.log(err);
                 return "something is wrong "
@@ -54,7 +118,6 @@ const Payementcontroller = () => {
         async activationpayment(id, sponsorlevel, sponsorindex) {
             try {
                 let ans = [];
-
                 const maxchild = await tree.findOne({ path: id }).sort({ level: -1 }).limit(1);
                 const maxlevel = parseInt(maxchild.level);
                 const user = await tree.findOne({ id: id });
